@@ -76,7 +76,9 @@ function App() {
       </header>
 
       <main>
+        {/* key : le formulaire est recréé (et pré-rempli) quand on change de tâche à modifier */}
         <TaskForm
+          key={editingTask?.id ?? 'nouvelle'}
           task={editingTask}
           onSubmit={(data) => {
             if (editingTask) {

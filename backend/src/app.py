@@ -69,11 +69,11 @@ class Task(TaskCreate):
 
 
 # =============================================================================
-# IN-MEMORY STORAGE (for Atelier 1 & 2)
+# IN-MEMORY STORAGE (for TP 1 & 2)
 # =============================================================================
 
 # Simple dictionary to store tasks
-# In Atelier 3, this will be replaced with PostgreSQL database
+# In TP 3, this will be replaced with PostgreSQL database
 tasks_db: Dict[int, Task] = {}
 next_id = 1
 
@@ -241,6 +241,6 @@ async def delete_task(task_id: int):
     raise HTTPException(status_code=501, detail="Delete not implemented yet - complete this function!")
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover (lancement manuel, pas testé)
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)

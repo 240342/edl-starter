@@ -20,54 +20,16 @@
    cd edl-starter
    ```
 
-### Étape 1.2 : Installer les Dépendances Python (2 Options)
+### Étape 1.2 : Installer les Dépendances
 
-**Option A : Avec UV (Recommandé - Plus Rapide) ⚡**
-
-UV est un gestionnaire de paquets Python moderne et ultra-rapide.
-
-**Installation UV :**
-
-*macOS/Linux :*
-
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
-
-*Windows :*
-
-```powershell
-powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
-```
-
-**Installer les dépendances :**
+Les outils (uv, Node.js) ne sont pas encore installés ? Suivez d'abord la page [Installation](installation.md).
 
 ```bash
 cd backend
-uv venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
 uv sync
 ```
 
----
-
-**Option B : Avec pip (Classique) 🐍**
-
-Si vous préférez pip ou avez déjà Python installé :
-
-```bash
-cd backend
-python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-```
-
----
-
-**Dans le reste de l'atelier :**
-
-- Si vous utilisez **UV** : `uv run pytest`
-- Si vous utilisez **pip** : `pytest`
+*Sans uv (avec pip) :* `python -m venv .venv`, activez-le (`source .venv/bin/activate`, ou `.venv\Scripts\activate` sous Windows), puis `pip install -r requirements.txt`. Dans la suite, remplacez `uv run pytest` par `pytest`.
 
 ---
 
@@ -75,8 +37,10 @@ pip install -r requirements.txt
 
 ### Étape 2.1 : Lancer le Serveur
 
+Dans le dossier `backend/` :
+
 ```bash
-uv run uvicorn src.app:app --reload
+uv run uvicorn src.app:app --reload   # avec pip : uvicorn src.app:app --reload
 ```
 
 ### Étape 2.2 : Tester dans le Navigateur
@@ -101,8 +65,10 @@ Visitez :
    }
    ```
 
-5. Cliquez sur **"Execute"**
-6. Vous devriez voir un code `201 Created`
+5. Cliquez sur **"Execute"** : code `201 Created`, et la réponse contient l'`id` de la tâche
+6. Relisez-la avec **GET /tasks/{task_id}** en mettant cet `id` (les id commencent à **1**, pas à 0)
+
+⚠️ Les tâches sont en mémoire : à chaque sauvegarde de `app.py`, `--reload` redémarre le serveur et **efface toutes les tâches**.
 
 ### Étape 2.4 : Explorer le Code
 
@@ -279,7 +245,21 @@ Les rappels de syntaxe (requêtes, codes HTTP) sont en bas de `test_api.py`.
 
 💡 **Un test qui passe du premier coup est-il un bon test ?** Pour le savoir, cassez-le exprès : remplacez par exemple `422` par `200` dans votre assertion. Le test doit devenir rouge. S'il reste vert, il ne vérifie rien ! Remettez ensuite la bonne valeur.
 
-**🎁 Bonus :** deux tests supplémentaires sont désactivés en bas du fichier (filtre combiné, titre de 200 / 201 caractères). Supprimez la ligne `@pytest.mark.skip(...)` pour les écrire.
+---
+
+### 🎁 Bonus Python (facultatifs)
+
+1. **Tests désactivés :** en bas de `test_api.py`, supprimez `@pytest.mark.skip(...)` et écrivez les deux tests.
+2. **TDD à partir de zéro :** `GET /tasks?search=rapport` renvoie les tâches dont le titre contient « rapport », sans tenir compte des majuscules. Écrivez d'abord `test_search_tasks_by_title` (🔴), puis ajoutez le paramètre `search` à `get_tasks()` (🟢).
+3. **parametrize :** écrivez `test_create_task_with_invalid_priority`, qui vérifie en **un seul** test que `"urgent"`, `""` et `"HIGH"` sont refusées (422). Syntaxe :
+
+   ```python
+   @pytest.mark.parametrize("nombre", [1, 2, 3])
+   def test_nombre_positif(nombre):
+       assert nombre > 0
+   ```
+
+4. **Couverture à 100 % :** après les exercices, `app.py` est couvert à environ 95 %. Lisez la colonne **Missing** (phase 5) et ajoutez les tests qui manquent pour atteindre 100 %. Indice : un titre fait seulement d'espaces (`"   "`) n'est pas refusé par Pydantic, mais par le code.
 
 ---
 
@@ -295,7 +275,7 @@ uv run pytest -v
 ========== 14 passed, 2 skipped ==========
 ```
 
-(`16 passed` si vous avez fait les bonus.) 🎉
+(Davantage si vous avez fait les bonus.) 🎉
 
 ---
 
@@ -324,7 +304,7 @@ open htmlcov/index.html   # macOS
 start htmlcov/index.html  # Windows
 ```
 
-Cliquez sur `src/app.py` : les lignes en rouge n'ont jamais été exécutées. Choisissez-en une et écrivez un test qui la couvre.
+Cliquez sur `src/app.py` : les lignes en rouge n'ont jamais été exécutées (c'est le bonus 4 : les couvrir toutes).
 
 > 💡 100 % de couverture ne veut pas dire 0 bug : ça veut dire que chaque ligne a été **exécutée**, pas qu'elle a été **vérifiée**. C'est pour ça qu'on teste aussi les cas d'erreur (404, 422).
 
@@ -358,7 +338,7 @@ Ce sont des fonctions **pures** : elles reçoivent une liste et renvoient un ré
 
 ### Étape 6.2 : Installer et lancer les tests
 
-Il faut **Node.js 22.12 ou plus récent** (vérifiez avec `node -v`). Sinon, installez la version LTS depuis <https://nodejs.org>.
+Depuis la racine du dépôt (`cd ..` si vous êtes dans `backend/`) :
 
 ```bash
 cd frontend
@@ -408,11 +388,14 @@ C'est le même pattern **Arrange-Act-Assert** qu'en Python. Seule la syntaxe cha
 
 | Python (pytest) | JavaScript (Vitest) |
 |-----------------|---------------------|
+| `from tasks import completionRate` | `import { completionRate } from './tasks';` |
+| `class TestCompletionRate:` | `describe('completionRate', () => { ... });` |
 | `def test_xxx(client):` | `it('xxx', () => { ... });` |
 | `x = 3` | `const x = 3;` |
 | `assert resultat == 50` | `expect(resultat).toBe(50);` |
 | `assert resultat == {"todo": 2}` | `expect(resultat).toEqual({ todo: 2 });` |
 
+- `() => { ... }` est une fonction sans nom : l'équivalent d'un `def`.
 - `toBe` compare une valeur simple (nombre, texte, booléen).
 - `toEqual` compare le contenu d'un objet ou d'un tableau.
 
@@ -444,6 +427,8 @@ Chaque test contient déjà ses étapes en commentaire et une ligne `throw new E
 
 💡 Le 3e test vérifie un **cas limite** : sans le `if (tasks.length === 0)` dans `tasks.ts`, la fonction diviserait par zéro. Essayez de supprimer ce `if` : votre test doit échouer. Remettez-le ensuite.
 
+**🎁 Bonus (TDD) :** `filterByStatus(tasks, 'done')` renvoie seulement les tâches terminées. Écrivez d'abord son test dans `tasks.test.js` (🔴), puis la fonction dans `tasks.ts`, sur le modèle de `completionRate` (🟢).
+
 ---
 
 ### Étape 6.4 : Couverture Frontend
@@ -470,7 +455,7 @@ const tasks = await api.getTasks();  // api.ts appelle le faux fetch()
 expect(tasks).toHaveLength(1);
 ```
 
-On peut aussi vérifier **comment** le faux `fetch()` a été appelé (URL, méthode HTTP…). Les 5 tests du fichier sont déjà écrits et commentés : lisez-les, il n'y a rien à compléter.
+On peut aussi vérifier **comment** le faux `fetch()` a été appelé (URL, méthode HTTP…). Les 5 tests du fichier sont déjà écrits : lisez-les, il n'y a rien à compléter. Ne cherchez pas à comprendre chaque ligne : retenez l'idée du mock.
 
 ### Étape 6.6 : Lancer l'Application Complète
 
@@ -501,30 +486,23 @@ Vous devriez voir l'application TaskFlow fonctionner :
 
 **Objectif :** Voir que les principes de TDD s'appliquent à tous les langages !
 
-Les exercices Java sont dans le dossier [`java-exercises/`](../java-exercises/).
+Les exercices Java sont dans le dossier `java-exercises/`.
 
 ---
 
-### Prérequis : Installer Java
+Java doit être installé : voir la page [Installation](installation.md).
 
-```bash
-# Vérifier si déjà installé
-java -version    # Devrait afficher Java 17+
-```
-
-**Si pas installé :**
-
-- **macOS :** `brew install openjdk@17`
-- **Linux :** `sudo apt install openjdk-17-jdk`
-- **Windows :** Installer depuis [adoptium.net](https://adoptium.net/)
-
-**Commandes de base :**
-
-Chaque exercice utilise un Makefile pour simplifier la compilation et l'exécution :
+Chaque exercice se lance avec un Makefile :
 
 ```bash
 make test     # Compiler + exécuter les tests + nettoyer
-make clean    # Supprimer les fichiers .class
+```
+
+**Windows** (pas de `make`) : dans le dossier de l'exercice, remplacez `make test` par ces deux commandes (pour `money`, mettez `MoneyTest` à la place des 4 noms de tests) :
+
+```powershell
+javac -cp ".;..\lib\junit-4.13.2.jar;..\lib\hamcrest-core-1.3.jar" *.java
+java -cp ".;..\lib\junit-4.13.2.jar;..\lib\hamcrest-core-1.3.jar" org.junit.runner.JUnitCore AdditionTest ProduitTest SurfaceTest PerimetreTest
 ```
 
 ---

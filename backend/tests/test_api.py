@@ -1,5 +1,5 @@
 """
-Tests API TaskFlow - Atelier 1 Starter
+Tests API TaskFlow - TP 1
 
 Apprenez en faisant ! Ce fichier vous montre comment écrire des tests, puis vous en écrirez de similaires.
 
@@ -141,8 +141,9 @@ def test_update_task_title(client):
 
 
 def test_update_only_changes_sent_fields(client):
-    """Si on envoie seulement {"status": "done"}, le statut change
-    mais les autres champs (titre, description, priorité) restent identiques."""
+    """Créez une tâche avec un titre, une description et une priorité,
+    puis envoyez seulement {"status": "done"} : le statut change,
+    mais le titre, la description et la priorité restent identiques."""
     pytest.fail("Test à écrire (Exercice 2)")
 
 
@@ -175,7 +176,8 @@ def test_update_task_with_invalid_priority(client):
 
 
 def test_filter_tasks_by_status(client):
-    """GET /tasks?status=done ne renvoie que les tâches terminées."""
+    """Créez une tâche "todo" et une tâche "done" : GET /tasks?status=done
+    ne renvoie qu'une seule tâche, celle qui est terminée."""
     pytest.fail("Test à écrire (Exercice 3)")
 
 
@@ -225,8 +227,7 @@ PATTERNS COURANTS :
    response = client.post("/tasks", json={"bad": "data"})
    assert response.status_code == 422
 
-6. Tester les erreurs 404 :
-   response = client.get("/tasks/999")
+6. Tester les erreurs 404 (la ressource demandée n'existe pas) :
    assert response.status_code == 404
 
 CODES DE STATUT COURANTS :
@@ -241,7 +242,3 @@ RAPPELEZ-VOUS :
 - Les tâches sont automatiquement effacées avant/après chaque test (fixture clean_tasks)
 - Les tests doivent être indépendants (ne pas dépendre d'autres tests)
 """
-
-
-if __name__ == "__main__":
-    pytest.main([__file__, "-v"])

@@ -1,7 +1,5 @@
 # Exercices Java - Version Starter
 
-Exercices basés sur Workshop-1.pdf
-
 ## Exercice I : Calculs Géométriques (30 min)
 
 **Dossier :** `calculs-geo/`

@@ -370,6 +370,8 @@ async def get_tasks(
     return query.all()
 ```
 
+> 💡 Bonus « recherche » du TP 1 : ajoutez le paramètre `search` et `query = query.filter(TaskModel.title.ilike(f"%{search}%"))`.
+
 > ⚠️ **Ne confondez pas `Task` et `TaskModel` !**
 >
 > | Modèle | Type | Utilisation |

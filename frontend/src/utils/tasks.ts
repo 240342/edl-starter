@@ -10,7 +10,7 @@ import { TaskStatus } from '../types/index';
  * Elles n'ont besoin que du statut de chaque tâche : on peut donc leur passer
  * de vraies tâches (Task) ou, dans les tests, de simples objets { status: 'todo' }.
  */
-export type HasStatus = { status: TaskStatus };
+type HasStatus = { status: TaskStatus };
 
 // Compte les tâches de chaque statut.
 // Exemple : countByStatus([{ status: 'todo' }, { status: 'done' }])

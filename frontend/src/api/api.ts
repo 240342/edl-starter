@@ -42,11 +42,6 @@ export const api = {
     return apiRequest<Task[]>(endpoint);
   },
 
-  // Get single task
-  async getTask(taskId: number): Promise<Task> {
-    return apiRequest<Task>(`/tasks/${taskId}`);
-  },
-
   // Create new task
   async createTask(task: TaskCreate): Promise<Task> {
     return apiRequest<Task>('/tasks', {

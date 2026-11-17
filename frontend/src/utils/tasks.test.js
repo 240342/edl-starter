@@ -7,10 +7,14 @@ import { countByStatus, completionRate } from './tasks';
  * Ces tests sont écrits en JavaScript : même structure qu'en Python avec pytest :
  *
  *   Python (pytest)                       JavaScript (Vitest)
+ *   from tasks import completionRate      import { completionRate } from './tasks';
+ *   class TestCompletionRate:             describe('completionRate', () => { ... });
  *   def test_xxx():                       it('xxx', () => { ... });
  *   tasks = [...]                         const tasks = [...];
  *   assert resultat == 3                  expect(resultat).toBe(3);
  *   assert resultat == {"a": 1}           expect(resultat).toEqual({ a: 1 });
+ *
+ * () => { ... } est une fonction sans nom : l'équivalent d'un def.
  *
  * toBe    → compare une valeur simple (nombre, texte, booléen)
  * toEqual → compare le contenu d'un objet ou d'un tableau
