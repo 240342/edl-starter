@@ -563,7 +563,7 @@ cd java-exercises/money
 make test
 ```
 
-Résultat attendu : `OK (4 tests)`.
+Au départ, 3 tests sur 4 échouent. Résultat attendu à la fin : `OK (4 tests)`.
 
 ---
 
